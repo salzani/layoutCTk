@@ -13,7 +13,8 @@ window.title("Register")
 window.resizable(False, False) #not manipulate the window
 
 #FONTS
-font= customtkinter.CTkFont(family="Consolas", size=20, weight="bold", slant="roman")    
+font= customtkinter.CTkFont(family="Consolas", size=20, weight="bold", slant="roman") 
+fontwo= customtkinter.CTkFont(family="Consolas", size=25, weight="bold", slant="roman")   
 font2= customtkinter.CTkFont(family="Ivy", size=12, weight="bold", slant="roman")
 font3= customtkinter.CTkFont(family="Bodoni", size=9, weight="bold", slant="roman")     
 font4= customtkinter.CTkFont(family="Times", size=25, weight="bold", slant="italic") 
@@ -27,39 +28,45 @@ password_var = customtkinter.StringVar()
 confirm_password_var = customtkinter.StringVar()
 
 
-
 #FUNCTIONS
 def finalWind():
     nameP = name_var.get()
 
     finalWindow = customtkinter.CTkToplevel(window, fg_color="black")
-    finalWindow.geometry("500x100")
+    finalWindow.geometry("500x400")
     finalWindow.title("Success!")
     finalWindow.resizable(False, False)
 
-    congratulations_label = customtkinter.CTkLabel(finalWindow, text=f"Parabéns, você completou seu cadastro.", font=font4)
-    congratulations_label.pack(pady=30)  
+    congratulations_label = customtkinter.CTkLabel(finalWindow, text=f"Congrats, welcome onboard.", font=fontwo)
+    congratulations_label.pack(pady=25)  
+
+    MugiLogo2 = PhotoImage(file="images\luffyNIKA.png")
+    MugiLogo2 = MugiLogo2.subsample(2,2)
+    MugiLogo2Label= Label(finalWindow, image=MugiLogo2, bg="black")
+
+    MugiLogo2Label.place(x=50, y=100)
 
 
     finalWindow.mainloop()
 
 
+
 def showPass():
 
     if checkbox_var.get() == True:
-        Thirdentry = customtkinter.CTkEntry(master=frame, placeholder_text="Password", width=300).place(x=50, y=330)
+        Thirdentry = customtkinter.CTkEntry(master=frame, width=300).place(x=50, y=330)
         # label3 = customtkinter.CTkLabel(master=frame, text="required field", text_color="red").place(x=52,y=360)
-        fourthentry = customtkinter.CTkEntry(master=frame, placeholder_text="Confirm Password", width=300).place(x=50, y=400)
+        fourthentry = customtkinter.CTkEntry(master=frame, width=300).place(x=50, y=400)
     else:
-        Thirdentry = customtkinter.CTkEntry(master=frame, placeholder_text="Password", width=300,show='*').place(x=50, y=330)
+        Thirdentry = customtkinter.CTkEntry(master=frame, width=300,show='*').place(x=50, y=330)
         # label3 = customtkinter.CTkLabel(master=frame, text="required field", text_color="red").place(x=52,y=360)
-        fourthentry = customtkinter.CTkEntry(master=frame, placeholder_text="Confirm Password", width=300,show='*').place(x=50, y=400)
-
+        fourthentry = customtkinter.CTkEntry(master=frame, width=300,show='*').place(x=50, y=400)
 
 
 #FRAME 1
 frame = customtkinter.CTkFrame(master=window, width=400, height=595)
 frame.pack(side= RIGHT)
+
 
 #FRAME 2
 frameTwo = customtkinter.CTkFrame(master=window, width=397, height=595, fg_color="#141414")
@@ -83,6 +90,7 @@ labelCpf = customtkinter.CTkLabel(master=frame, text="CPF", font = font2)
 labelCpf.place(x=50, y=160)
 Firstentry = customtkinter.CTkEntry(master=frame, width=300, textvariable=cpf_var)
 Firstentry.place(x=50, y=190)
+
 
 #Email LABEL ENTRY
 labelEmail = customtkinter.CTkLabel(master=frame, text="Email", font = font2)
