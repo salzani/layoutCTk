@@ -1,6 +1,9 @@
 import customtkinter
 from tkinter import *
 from tkinter import font
+import json
+
+
 
 
 customtkinter.set_appearance_mode("dark")
@@ -29,8 +32,37 @@ confirm_password_var = customtkinter.StringVar()
 
 
 #FUNCTIONS
+#function that inserts a a new register
+def insert(cpf, name, email, password):
+    #data path
+    _path = "data/data.txt"
+
+    #try create de file and add the register
+    try:
+        f = open(_path, "x")
+        newData = [{f"cpf" : cpf, "name" : name, "email" : email, "password" : password}]
+        f = open(_path, "w")
+        f.write(json.dumps(newData))
+        f.close()
+        
+    #error handling, if exists, just read instead of creating
+    except:
+        f = open(_path, "r")
+        data = json.loads(f.read())
+        newData = {f"cpf" : cpf, "name" : name, "email" : email, "password" : password}
+        data.append(newData)
+        f = open(_path, "w")
+        f.write(json.dumps(data))
+        f.close()
+
+
 def finalWind():
     nameP = name_var.get()
+    cpfP = cpf_var.get()
+    emailP = email_var.get()
+    passwordP = password_var.get()
+
+    insert(cpfP, nameP, emailP, passwordP)
 
     finalWindow = customtkinter.CTkToplevel(window, fg_color="black")
     finalWindow.geometry("500x400")
@@ -40,7 +72,7 @@ def finalWind():
     congratulations_label = customtkinter.CTkLabel(finalWindow, text=f"Congrats, welcome onboard.", font=fontwo)
     congratulations_label.pack(pady=25)  
 
-    MugiLogo2 = PhotoImage(file="images\luffyNIKA.png")
+    MugiLogo2 = PhotoImage(file="images\mugi.png")
     MugiLogo2 = MugiLogo2.subsample(2,2)
     MugiLogo2Label= Label(finalWindow, image=MugiLogo2, bg="black")
 
@@ -61,6 +93,8 @@ def showPass():
         Thirdentry = customtkinter.CTkEntry(master=frame, width=300,show='*').place(x=50, y=330)
         # label3 = customtkinter.CTkLabel(master=frame, text="required field", text_color="red").place(x=52,y=360)
         fourthentry = customtkinter.CTkEntry(master=frame, width=300,show='*').place(x=50, y=400)
+
+
 
 
 #FRAME 1
