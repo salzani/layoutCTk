@@ -2,6 +2,7 @@ import customtkinter
 from tkinter import *
 from tkinter import font
 import json
+import os
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("blue")
@@ -35,6 +36,10 @@ def insert(cpf, name, email, password):
 
     #try create de file and add the register
     try:
+        directory = "data"
+        parent_dir = "./"
+        path = os.path.join(parent_dir, directory)
+        os.mkdir(path)
         f = open(_path, "x")
         newData = [{f"cpf" : cpf, "name" : name, "email" : email, "password" : password}]
         f = open(_path, "w")
