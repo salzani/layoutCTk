@@ -3,12 +3,8 @@ from tkinter import *
 from tkinter import font
 import json
 
-
-
-
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("blue")
-
 
 window = customtkinter.CTk()
 window.geometry("800x600")
@@ -61,39 +57,56 @@ def finalWind():
     cpfP = cpf_var.get()
     emailP = email_var.get()
     passwordP = password_var.get()
+    cpasswordP = confirm_password_var.get()
 
-    insert(cpfP, nameP, emailP, passwordP)
+    if len(nameP) > 0 and len(cpfP) > 0 and len(emailP) > 0 and len(passwordP) > 0 and len(cpasswordP) > 0:
+        if(cpasswordP == passwordP):
+            insert(cpfP, nameP, emailP, passwordP)
 
-    finalWindow = customtkinter.CTkToplevel(window, fg_color="black")
-    finalWindow.geometry("500x400")
-    finalWindow.title("Success!")
-    finalWindow.resizable(False, False)
+            emptyFields.destroy()
+            equalPasswords.destroy()
 
-    congratulations_label = customtkinter.CTkLabel(finalWindow, text=f"Congrats, welcome onboard.", font=fontwo)
-    congratulations_label.pack(pady=25)  
+            name.delete(0, 'end')
+            Firstentry.delete(0, 'end')
+            Secondentry.delete(0, 'end')
+            Thirdentry.delete(0, 'end')
+            fourthentry.delete(0, 'end')
 
-    MugiLogo2 = PhotoImage(file="images\mugi.png")
-    MugiLogo2 = MugiLogo2.subsample(2,2)
-    MugiLogo2Label= Label(finalWindow, image=MugiLogo2, bg="black")
+            finalWindow = customtkinter.CTkToplevel(window, fg_color="black")
+            finalWindow.attributes('-topmost', 1)
+            #finalWindow.attributes('-topmost', 0)
+            finalWindow.geometry("500x400")
+            finalWindow.title("Success!")
+            finalWindow.resizable(False, False)
 
-    MugiLogo2Label.place(x=50, y=100)
+            congratulations_label = customtkinter.CTkLabel(finalWindow, text=f"Congrats, welcome onboard.", font=fontwo)
+            congratulations_label.pack(pady=25)  
 
+            MugiLogo2 = PhotoImage(file="images\mugi.png")
+            MugiLogo2 = MugiLogo2.subsample(2,2)
+            MugiLogo2Label= Label(finalWindow, image=MugiLogo2, bg="black")
 
-    finalWindow.mainloop()
+            MugiLogo2Label.place(x=50, y=100)
 
+            finalWindow.mainloop()
+        else:
+            emptyFields.destroy()
+            equalPasswords.place(x=110, y=485)
+
+    else:
+        emptyFields.place(x=140, y=485)
 
 
 def showPass():
 
     if checkbox_var.get() == True:
-        Thirdentry = customtkinter.CTkEntry(master=frame, width=300).place(x=50, y=330)
+        Thirdentry = customtkinter.CTkEntry(master=frame, width=300, textvariable=password_var).place(x=50, y=330)
         # label3 = customtkinter.CTkLabel(master=frame, text="required field", text_color="red").place(x=52,y=360)
-        fourthentry = customtkinter.CTkEntry(master=frame, width=300).place(x=50, y=400)
+        fourthentry = customtkinter.CTkEntry(master=frame, width=300, textvariable=confirm_password_var).place(x=50, y=400)
     else:
-        Thirdentry = customtkinter.CTkEntry(master=frame, width=300,show='*').place(x=50, y=330)
+        Thirdentry = customtkinter.CTkEntry(master=frame, width=300,show='*', textvariable=password_var).place(x=50, y=330)
         # label3 = customtkinter.CTkLabel(master=frame, text="required field", text_color="red").place(x=52,y=360)
-        fourthentry = customtkinter.CTkEntry(master=frame, width=300,show='*').place(x=50, y=400)
-
+        fourthentry = customtkinter.CTkEntry(master=frame, width=300,show='*', textvariable=confirm_password_var).place(x=50, y=400)
 
 
 
@@ -101,6 +114,8 @@ def showPass():
 frame = customtkinter.CTkFrame(master=window, width=400, height=595)
 frame.pack(side= RIGHT)
 
+emptyFields = customtkinter.CTkLabel(master=frame, text="Please fill all the fields", font = font2)
+equalPasswords = customtkinter.CTkLabel(master=frame, text="Please digit the same password", font = font2)
 
 #FRAME 2
 frameTwo = customtkinter.CTkFrame(master=window, width=397, height=595, fg_color="#141414")
