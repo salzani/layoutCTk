@@ -18,7 +18,7 @@ fontwo= customtkinter.CTkFont(family="Consolas", size=25, weight="bold", slant="
 font2= customtkinter.CTkFont(family="Ivy", size=12, weight="bold", slant="roman")
 font3= customtkinter.CTkFont(family="Bodoni", size=9, weight="bold", slant="roman")     
 font4= customtkinter.CTkFont(family="Times", size=25, weight="bold", slant="italic") 
-
+font5= customtkinter.CTkFont(family="Ivy", size=12, weight="bold", slant="roman")
 
 #STRING VARS / STORE THE ENTRYS
 name_var = customtkinter.StringVar()
@@ -29,6 +29,60 @@ confirm_password_var = customtkinter.StringVar()
 
 
 #FUNCTIONS
+#function to validate cpf txt
+def validatecpf(cpf):
+    
+    #sorting out the first nine numbers on a variable
+    first =cpf[:9]
+
+    #creating a var with invert numbers and a variable(RESULT) with the value 0
+    invert2 = 10
+    result2 = 0
+
+    for number2 in first:
+        result2+=int(number2)*invert2
+        invert2 -= 1
+
+    ver1 = result2*10%11
+    if ver1 >= 10:
+        ver1 = 0
+
+        
+
+
+    ###############
+
+    #sorting out the first teen numbers on a variable
+    second = cpf[:10]
+
+    #creating a var with invert numbers and a variable(RESULT) with the value 0
+    invertwo2 = 11
+    resultwo2 = 0
+
+    for numbertwo2 in second:
+        resultwo2 += int(numbertwo2)
+        invertwo2 -= 1
+
+    ver2 = resultwo2*10%11
+    if ver2 >= 10:
+        ver2 = 0
+    else: 
+        ver2
+
+
+    #REBUILDING THE cpf
+    cpfgen = f'{first}{ver1}{ver2}'
+
+    #VALIDATING THE cpf
+    if cpf == cpfgen:
+        return(True)
+    else:
+        return(False)
+
+
+
+
+
 #function that inserts a a new register
 def insert(cpf, name, email, password):
     #data path
@@ -56,6 +110,9 @@ def insert(cpf, name, email, password):
         f.write(json.dumps(data))
         f.close()
 
+def returnFinalWind():
+    finalWindow.destroy()
+
 
 def finalWind():
     nameP = name_var.get()
@@ -65,38 +122,48 @@ def finalWind():
     cpasswordP = confirm_password_var.get()
 
     if len(nameP) > 0 and len(cpfP) > 0 and len(emailP) > 0 and len(passwordP) > 0 and len(cpasswordP) > 0:
-        if(cpasswordP == passwordP):
-            insert(cpfP, nameP, emailP, passwordP)
+        if validatecpf(cpfP):
+            if(cpasswordP == passwordP):
+                insert(cpfP, nameP, emailP, passwordP)
 
-            emptyFields.destroy()
-            equalPasswords.destroy()
+                emptyFields.destroy()
+                equalPasswords.destroy()
+                invalidCpf.destroy()
 
-            name.delete(0, 'end')
-            Firstentry.delete(0, 'end')
-            Secondentry.delete(0, 'end')
-            Thirdentry.delete(0, 'end')
-            fourthentry.delete(0, 'end')
+                name.delete(0, 'end')
+                Firstentry.delete(0, 'end')
+                Secondentry.delete(0, 'end')
+                Thirdentry.delete(0, 'end')
+                fourthentry.delete(0, 'end')
+                global finalWindow
+                finalWindow = customtkinter.CTkToplevel(window, fg_color="#2b2a2e")
+                finalWindow.attributes('-topmost', 1)
+                #finalWindow.attributes('-topmost', 0)
+                finalWindow.geometry("500x400")
+                finalWindow.title("Success!")
+                finalWindow.resizable(False, False)
 
-            finalWindow = customtkinter.CTkToplevel(window, fg_color="black")
-            finalWindow.attributes('-topmost', 1)
-            #finalWindow.attributes('-topmost', 0)
-            finalWindow.geometry("500x400")
-            finalWindow.title("Success!")
-            finalWindow.resizable(False, False)
+                congratulations_label = customtkinter.CTkLabel(finalWindow, text=f"Congrats, welcome onboard.", font=fontwo)
+                congratulations_label.pack(pady=25)  
 
-            congratulations_label = customtkinter.CTkLabel(finalWindow, text=f"Congrats, welcome onboard.", font=fontwo)
-            congratulations_label.pack(pady=25)  
+                button2 = customtkinter.CTkButton(finalWindow, text="return", font=font2, width=200, command=returnFinalWind)
+                button2.pack(pady = 45)
 
-            MugiLogo2 = PhotoImage(file="images\mugi.png")
-            MugiLogo2 = MugiLogo2.subsample(2,2)
-            MugiLogo2Label= Label(finalWindow, image=MugiLogo2, bg="black")
+                MugiLogo2 = PhotoImage(file="images\luffynika.png")
+                MugiLogo2 = MugiLogo2.subsample(2,2)
+                MugiLogo2Label= Label(finalWindow, image=MugiLogo2, bg="#2b2a2e")
 
-            MugiLogo2Label.place(x=50, y=100)
+                MugiLogo2Label.place(x=140, y=210)
 
-            finalWindow.mainloop()
+                finalWindow.mainloop()
+            else:
+                emptyFields.destroy()   
+                invalidCpf.destroy()
+                equalPasswords.place(x=110, y=485)
         else:
             emptyFields.destroy()
-            equalPasswords.place(x=110, y=485)
+        
+            invalidCpf.place(x=110, y=485)
 
     else:
         emptyFields.place(x=140, y=485)
@@ -119,8 +186,9 @@ def showPass():
 frame = customtkinter.CTkFrame(master=window, width=400, height=595)
 frame.pack(side= RIGHT)
 
-emptyFields = customtkinter.CTkLabel(master=frame, text="Please fill all the fields", font = font2)
-equalPasswords = customtkinter.CTkLabel(master=frame, text="Please digit the same password", font = font2)
+emptyFields = customtkinter.CTkLabel(master=frame, text="Please fill all the fields", font = font2, text_color='red')
+equalPasswords = customtkinter.CTkLabel(master=frame, text="Please digit the same password", font = font2, text_color='red')
+invalidCpf = customtkinter.CTkLabel(master=frame, text="Please insert a valid CPF", font = font2, text_color='red')
 
 #FRAME 2
 frameTwo = customtkinter.CTkFrame(master=window, width=397, height=595, fg_color="#141414")
@@ -133,15 +201,15 @@ label.place(x=110, y=40)
 
 
 #NAME LABEL ENTRY
-labelName = customtkinter.CTkLabel(master=frame, text="name", font = font2)
+labelName = customtkinter.CTkLabel(master=frame, text="Name", font = font2)
 labelName.place(x=50, y=90)
 name = customtkinter.CTkEntry(master=frame,width=300, textvariable=name_var)
 name.place(x=50, y=120)
 
 
-#CPF LABEL ENTRY
-labelCpf = customtkinter.CTkLabel(master=frame, text="CPF", font = font2)
-labelCpf.place(x=50, y=160)
+#cpf LABEL ENTRY
+labelcpf = customtkinter.CTkLabel(master=frame, text="CPF", font = font2)
+labelcpf.place(x=50, y=160)
 Firstentry = customtkinter.CTkEntry(master=frame, width=300, textvariable=cpf_var)
 Firstentry.place(x=50, y=190)
 
@@ -172,6 +240,7 @@ fourthentry.place(x=50, y=400)
 
 ###BUTTON
 button = customtkinter.CTkButton(master=frame, text="REGISTER", font=font2, width=200, command=finalWind).place(x=104, y= 520)
+buttonSearch = customtkinter.CTkButton(master=frameTwo, text="SEARCH", font=font3, width=100).place(x=140, y= 420)
 
 
 ###INFOS
@@ -190,7 +259,7 @@ label3.place(x=10, y=560)
 # logoLabel = Label(image=logo, bg= "#141414")
 
 #MUGI
-MugiLogo = PhotoImage(file="images/mugi.png")
+MugiLogo = PhotoImage(file="images\mugi.png")
 MugiLogo = MugiLogo.subsample(3,3)
 MugiLogoLabel= Label(image=MugiLogo, bg="#141414")
 
