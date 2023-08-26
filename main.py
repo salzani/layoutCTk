@@ -20,12 +20,17 @@ font3= customtkinter.CTkFont(family="Bodoni", size=9, weight="bold", slant="roma
 font4= customtkinter.CTkFont(family="Times", size=25, weight="bold", slant="italic") 
 font5= customtkinter.CTkFont(family="Ivy", size=12, weight="bold", slant="roman")
 
+
+#COLORS
+graySt = "#1c1a1a"
+
 #STRING VARS / STORE THE ENTRYS
 name_var = customtkinter.StringVar()
 cpf_var = customtkinter.StringVar()
 email_var = customtkinter.StringVar()
 password_var = customtkinter.StringVar()
 confirm_password_var = customtkinter.StringVar()
+cpfSearch_var = customtkinter.StringVar()
 
 
 #FUNCTIONS
@@ -82,12 +87,11 @@ def validatecpf(cpf):
 
 
 
+#data path
+_path = "data/data.txt"
 
 #function that inserts a a new register
 def insert(cpf, name, email, password):
-    #data path
-    _path = "data/data.txt"
-
     #try create de file and add the register
     try:
         directory = "data"
@@ -109,10 +113,6 @@ def insert(cpf, name, email, password):
         f = open(_path, "w")
         f.write(json.dumps(data))
         f.close()
-
-def returnFinalWind():
-    finalWindow.destroy()
-
 
 def finalWind():
     nameP = name_var.get()
@@ -149,7 +149,7 @@ def finalWind():
                 button2 = customtkinter.CTkButton(finalWindow, text="return", font=font2, width=200, command=returnFinalWind)
                 button2.pack(pady = 45)
 
-                MugiLogo2 = PhotoImage(file="images\luffynika.png")
+                MugiLogo2 = PhotoImage(file="images/luffynika.png")
                 MugiLogo2 = MugiLogo2.subsample(2,2)
                 MugiLogo2Label= Label(finalWindow, image=MugiLogo2, bg="#2b2a2e")
 
@@ -181,6 +181,95 @@ def showPass():
         fourthentry = customtkinter.CTkEntry(master=frame, width=300,show='*', textvariable=confirm_password_var).place(x=50, y=400)
 
 
+def returnFinalWind():
+    finalWindow.destroy()
+
+
+def searchByCpf(cpf, canvas):
+    canvas.delete("all")
+    f = open(_path, "r")
+    data = json.loads(f.read())
+    y = 30
+
+    for x in data:
+        if cpf == x["cpf"]:
+            canvas.create_text(300, y, text=f"CPF: {x['cpf']}", font=font2)
+            y += 20
+            canvas.create_text(300, y, text=f"Name: {x['name']}", font=font2)
+            y += 20
+            canvas.create_text(300, y, text=f"Email: {x['email']}", font=font2)
+            y += 20
+            canvas.create_text(300, y, text="-------------------------------------", font=font2)
+            y += 20
+
+def searchAll(canvas):
+    canvas.delete("all")
+    f = open(_path, "r")
+    data = json.loads(f.read())
+    y = 30
+
+    for x in data:
+        canvas.create_text(300, y, text=f"CPF: {x['cpf']}", fill="white", font=font2)
+        y += 20
+        canvas.create_text(300, y, text=f"Name: {x['name']}", fill="white", font=font2)
+        y += 20
+        canvas.create_text(300, y, text=f"Email: {x['email']}", fill="white", font=font2)
+        y += 20
+        canvas.create_text(300, y, text="-------------------------------------", fill="white", font=font2)
+        y += 20
+
+def openSearch():
+    global searchWindow
+    searchWindow = customtkinter.CTkToplevel(window, fg_color="#2b2a2e")
+    searchWindow.attributes('-topmost', 1)
+    #searchWindow.attributes('-topmost', 0)
+    searchWindow.geometry("700x550")
+    searchWindow.title("Search Data")
+    searchWindow.resizable(False, False)
+
+    MugiLogo3 = PhotoImage(file="images\luffyanaoPRIME.png")
+    MugiLogo3 = MugiLogo3.subsample(1,1)
+    MugiLogo3Label= Label(searchWindow, image=MugiLogo3, bg="#2b2a2e")
+
+    MugiLogo3Label.place(x=530, y=410)
+
+    labelCpfSearch = customtkinter.CTkLabel(searchWindow, text="CPF", font = font2)
+    labelCpfSearch.place(x=30, y=5)
+    FirstentrySearch = customtkinter.CTkEntry(searchWindow, width=300, textvariable=cpfSearch_var)
+    FirstentrySearch.place(x=30, y=30)
+
+    def quitSearch():
+        searchWindow.destroy()
+
+
+    ###BUTTON
+    buttonSearchCpf = customtkinter.CTkButton(searchWindow, text="SEARCH", font=font2, width=130, command= lambda : searchByCpf(cpfSearch_var.get(), canvas)).place(x=370, y= 30)
+    buttonSearchAll = customtkinter.CTkButton(searchWindow, text = "SEARCH ALL", font = font2, width= 130, command= lambda : searchAll(canvas)).place(x =530, y = 30 )
+    buttonReturn = customtkinter.CTkButton(searchWindow, text = "RETURN", font = font2, width= 130, command=quitSearch).place(x =30, y = 420 )
+
+    ###DATA LAYOUT
+
+    canvas = customtkinter.CTkCanvas(searchWindow, width=640, height=320)
+    canvas.configure(bg=graySt)
+    canvas.place(x=30, y=70)
+
+    
+    canvas_scrollbar = customtkinter.CTkScrollbar(searchWindow, command=canvas.yview, height=220)
+    canvas_scrollbar.place(x=680, y=70)
+    canvas.config(yscrollcommand=canvas_scrollbar.set)
+    canvas.config(scrollregion=canvas.bbox("all"))
+
+    ###INFOS
+
+    label2 = customtkinter.CTkLabel(searchWindow, text="Mugiwara's corp.", font=font4)
+    label2.place(x=10, y=560)
+
+    label3 = customtkinter.CTkLabel(searchWindow, text="All Rights reserved ©", font = font3)
+    label3.place(x=210, y=565)
+
+    searchWindow.mainloop()
+
+
 
 #FRAME 1
 frame = customtkinter.CTkFrame(master=window, width=400, height=595)
@@ -208,7 +297,7 @@ name.place(x=50, y=120)
 
 
 #cpf LABEL ENTRY
-labelcpf = customtkinter.CTkLabel(master=frame, text="CPF", font = font2)
+labelcpf = customtkinter.CTkLabel(master=frame, text="CPF (just letters)", font = font2)
 labelcpf.place(x=50, y=160)
 Firstentry = customtkinter.CTkEntry(master=frame, width=300, textvariable=cpf_var)
 Firstentry.place(x=50, y=190)
@@ -240,7 +329,7 @@ fourthentry.place(x=50, y=400)
 
 ###BUTTON
 button = customtkinter.CTkButton(master=frame, text="REGISTER", font=font2, width=200, command=finalWind).place(x=104, y= 520)
-buttonSearch = customtkinter.CTkButton(master=frameTwo, text="SEARCH", font=font3, width=100).place(x=140, y= 420)
+buttonSearch = customtkinter.CTkButton(master=frameTwo, text="SEARCH", font=font3, width=100, command=openSearch).place(x=140, y= 420)
 
 
 ###INFOS
@@ -259,7 +348,7 @@ label3.place(x=10, y=560)
 # logoLabel = Label(image=logo, bg= "#141414")
 
 #MUGI
-MugiLogo = PhotoImage(file="images\mugi.png")
+MugiLogo = PhotoImage(file="images/mugi.png")
 MugiLogo = MugiLogo.subsample(3,3)
 MugiLogoLabel= Label(image=MugiLogo, bg="#141414")
 
