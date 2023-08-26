@@ -227,7 +227,7 @@ def openSearch():
     searchWindow.title("Search Data")
     searchWindow.resizable(False, False)
 
-    MugiLogo3 = PhotoImage(file="images\luffyanaoPRIME.png")
+    MugiLogo3 = PhotoImage(file="images/luffyanaoPRIME.png")
     MugiLogo3 = MugiLogo3.subsample(1,1)
     MugiLogo3Label= Label(searchWindow, image=MugiLogo3, bg="#2b2a2e")
 
